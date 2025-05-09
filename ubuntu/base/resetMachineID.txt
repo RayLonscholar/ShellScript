@@ -1,0 +1,9 @@
+#!/bin/bash
+if ! ls /root &>/dev/null; then
+  echo 'Please use "bash" to run' && exit 1
+fi
+
+# reset machine-id
+rm /etc/machine-id && \
+systemd-machine-id-setup
+echo "new machine-id: $(cat /sys/class/dmi/id/product_uuid)"

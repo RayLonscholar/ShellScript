@@ -63,4 +63,4 @@ systemctl enable containerd > /dev/null 2>&1
 echo "✅ setup successfully!"
 echo "containerd version: $(containerd --version | awk '{print $3}')"
 echo "kubelet version: $(kubelet --version | awk '{print $2}')"
-echo "docker version: $(docker version | awk '{print $3}')"
+echo "docker version: $(docker --version | awk '{sub(/,$/, "", $3); print $3}')"

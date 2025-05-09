@@ -35,6 +35,7 @@ apt-mark hold kubelet kubeadm kubectl > /dev/null 2>&1
 
 # setup network
 echo "[5/6] setup network ..."
+wget -qO - https://raw.githubusercontent.com/RayLonscholar/ShellScript/refs/heads/main/ubuntu/base/setNetwork.txt | sudo bash
 cat <<EOF | tee /etc/modules-load.d/k8s.conf
 overlay
 br_netfilter
@@ -52,7 +53,7 @@ EOF
 sysctl --system
 
 # install containerd
-echo "[6/6] 安裝 containerd ..."
+echo "[6/6] containerd installing ..."
 apt-get install -y containerd.io > /dev/null 2>&1
 mkdir -p /etc/containerd > /dev/null 2>&1
 containerd config default | tee /etc/containerd/config.toml > /dev/null 2>&1
@@ -62,6 +63,4 @@ systemctl enable containerd > /dev/null 2>&1
 echo "✅ setup successfully!"
 echo "containerd version: $(containerd --version | awk '{print $3}')"
 echo "kubelet version: $(kubelet --version | awk '{print $2}')"
-echo "kubeadm version: $(kubeadm --version | awk '{print $3}')"
-echo "kubectl version: $(kubectl --version | awk '{print $3}')"
-echo "docker version: $(docker --version | awk '{print $3}')"
+echo "docker version: $(docker version | awk '{print $3}')"

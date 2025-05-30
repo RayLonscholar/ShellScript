@@ -1,0 +1,16 @@
+#!/bin/bash
+if ! ls /root &>/dev/null; then
+  echo 'Please use "bash" to run' && exit 1
+fi
+
+# set environment variable
+export DEBIAN_FRONTEND=noninteractive # automatically answer "yes" to all prompts
+
+# update system & install dependencies
+apt-get update
+apt-get install -y \
+    vim nano \
+    wget curl \
+    netcat gpg \
+    apt-transport-https ca-certificates \
+    git openssh sudo\

@@ -6,7 +6,4 @@ fi
 
 # update system & install dependencies
 apk update
-apk add vim nano \
-    wget curl \
-    git openssh \
-    dialog agetty
+apk add vim nano wget curl git openssh dialog agetty

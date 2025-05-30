@@ -8,9 +8,4 @@ export DEBIAN_FRONTEND=noninteractive # automatically answer "yes" to all prompt
 
 # update system & install dependencies
 apt-get update
-apt-get install -y \
-    vim nano \
-    wget curl \
-    netcat gpg \
-    apt-transport-https ca-certificates \
-    git openssh sudo\
+apt-get install -y vim nano wget curl netcat gpg apt-transport-https ca-certificates git openssh sudo

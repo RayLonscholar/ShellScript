@@ -9,4 +9,4 @@ apk update
 apk add vim nano \
     wget curl \
     git openssh \
-    dialog agetty\
+    dialog agetty

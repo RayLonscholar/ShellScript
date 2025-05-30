@@ -1,0 +1,19 @@
+#!/bin/bash
+if ! ls /root &>/dev/null; then
+  echo 'Please use "bash" to run' && exit 1
+fi
+
+# set environment variable
+export DEBIAN_FRONTEND=noninteractive # automatically answer "yes" to all prompts
+
+# update system & install dependencies
+echo "[1/2] update system & dependencies installing ..."
+wget -qO - https://raw.githubusercontent.com/RayLonscholar/ShellScript/refs/heads/main/ubuntu/base/update.txt | sudo bash > /dev/null 2>&1
+
+# install docker
+echo "[2/2] docker installing ..."
+curl -fsSL https://get.docker.com -o get-docker.sh > /dev/null 2>&1
+sh ./get-docker.sh  > /dev/null 2>&1
+
+echo "✅ setup successfully!"
+echo "docker version: $(docker --version | awk '{sub(/,$/, "", $3); print $3}')"

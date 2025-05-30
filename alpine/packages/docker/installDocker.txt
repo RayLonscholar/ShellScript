@@ -1,0 +1,21 @@
+#!/bin/sh
+
+if [ "$(id -u)" -ne 0 ]; then
+  echo 'Please use "bash" to run' && exit 1
+fi
+
+# update system & install dependencies
+echo "[1/2] update system & dependencies installing ..."
+wget -qO - https://raw.githubusercontent.com/RayLonscholar/ShellScript/refs/heads/main/alpine/base/update.txt | sudo sh > /dev/null 2>&1
+
+# install docker
+echo "[2/2] docker installing ..."
+apk add --no-cache --update-cache docker docker-cli-compose > /dev/null 2>&1
+rc-update add docker default > /dev/null 2>&1
+rc-service docker start > /dev/null 2>&1
+addgroup ${USER} docker > /dev/null 2>&1
+
+echo "✅ setup successfully!"
+echo "在 5 秒後自動重啟系統 ..."
+sleep 5
+reboot

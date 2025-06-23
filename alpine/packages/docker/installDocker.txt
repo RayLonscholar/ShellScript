@@ -13,8 +13,8 @@ echo "[2/2] docker installing ..."
 apk add --no-cache --update-cache docker docker-cli-compose > /dev/null 2>&1
 rc-update add docker default > /dev/null 2>&1
 rc-service docker start > /dev/null 2>&1
-sudo groupadd docker > /dev/null 2>&1
-sudo usermod -aG docker $USER > /dev/null 2>&1
+sudo addgroup docker > /dev/null 2>&1
+sudo adduser $(whoami) docker > /dev/null 2>&1
 
 echo "✅ setup successfully!"
 echo "在 5 秒後自動重啟系統 ..."

@@ -1,0 +1,68 @@
+#!/bin/sh
+
+apk update
+apk add s3fs-fuse fuse
+
+if [ -d "./filebrowser" ]; then
+  rm -rf filebrowser/*
+else
+  mkdir filebrowser
+fi
+
+cd filebrowser
+
+mkdir -p -m 755 database config srv
+chown -R 1000:1000 database config srv
+
+cat << 'EOF' > docker-compose.yml
+services:
+  minio:
+    image: quay.io/minio/minio:RELEASE.2025-04-22T22-12-26Z
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: <your username>
+      MINIO_ROOT_PASSWORD: <your password>
+    command: server /data --console-address ":9001"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
+  filebrowser:
+    image: filebrowser/filebrowser:v2.51.2
+    container_name: filebrowser
+    user: "1000:1000"
+    ports:
+      - "4100:80"
+    volumes:
+      - /mnt/minio:/srv
+      - ./database:/database
+    command:
+      - --noauth
+    depends_on:
+      - minio
+    restart: unless-stopped
+EOF
+
+docker compose up -d
+
+echo "<MINIO_ROOT_USER>:<MINIO_ROOT_PASSWORD>" > /etc/passwd-s3fs
+chmod 600 /etc/passwd-s3fs
+
+cat << 'EOF' > mount-minio.sh
+if [ -d "/mnt/minio" ]; then
+  rm -rf /mnt/minio/*
+else
+  mkdir /mnt/minio
+fi
+
+modprobe fuse
+s3fs mybucket /mnt/minio -o passwd_file=/etc/passwd-s3fs -o url=http://localhost:9000 -o use_path_request_style -o allow_other -o umask=000 -o uid=1000 -o gid=1000
+
+docker compose restart
+EOF
+
+chmod +x mount-minio.sh
+
+echo "Please create a Bucket named 'mybucket' on the minio server, and then execute 'sh mount-minio.sh'."
